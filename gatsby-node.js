@@ -7,23 +7,26 @@ exports.createPages = async ({ graphql, actions }) => {
   const blogPost = path.resolve(`./src/templates/blog-post.js`)
   const result = await graphql(
     `
-      {
-        allMarkdownRemark(
-          sort: { fields: [frontmatter___date], order: DESC }
-          limit: 1000
-        ) {
-          edges {
-            node {
-              fields {
-                slug
+    {
+      allMarkdownRemark(
+        sort: { fields: [frontmatter___date], order: DESC }
+        limit: 1000
+      ) {
+        edges {
+          node {
+            fields {
+              slug
+              readingTime {
+                text
               }
-              frontmatter {
-                title
-              }
+            }
+            frontmatter {
+              title
             }
           }
         }
       }
+    }
     `
   )
 
@@ -39,10 +42,11 @@ exports.createPages = async ({ graphql, actions }) => {
     const next = index === 0 ? null : posts[index - 1].node
 
     createPage({
-      path: post.node.fields.slug,
+      path: post.node.fields.slug + "test",
       component: blogPost,
       context: {
         slug: post.node.fields.slug,
+        readingTime: post.node.fields.readingTime.text,
         previous,
         next,
       },
